@@ -94,11 +94,11 @@ void cycleMessage(String msg1, String msg2, String msg3, int force) {
 int probable_pass = 0;
 int processPassEvent(int dist) {
   if (dist_average == -1) return 0;
-  if (dist * 1.0/dist_average < 0.5) { // Pretty close!
-    probable_pass = 1;
+  if (dist * 1.0/dist_average < 0.3) { // Pretty close!
+    probable_pass += 1; // Increment instead of binary flag -- makes sure it's not just a noisy reading
   }
   else {
-    if (probable_pass) { // Getting close then far -- probably passed it
+    if (probable_pass > 5) { // Getting close then far -- probably passed it
       cycleMessage("Oof, you walked right past me!", "Don't even have time to stop and say hi?", "Alright, just keep walking, what could go wrong?", 1);
       probable_pass = 0;
       return 1;
@@ -113,7 +113,7 @@ void loop() {
   int button1 = digitalRead(18); // Yellow button
   int button2 = digitalRead(19); // Blue button
 
-  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to halfway point for large range without noisy readings (~5m)
+  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to 75% point for large range without noisy readings (~6m)
   if (button1 && button2 && !pir) { // Not in room
     if (last_pir) { // Just left the room
       cycleMessage("Why'd you leave? Don't give up.", "Where are you going?!", "Oh great, you're going the worst way possible.", 1);
