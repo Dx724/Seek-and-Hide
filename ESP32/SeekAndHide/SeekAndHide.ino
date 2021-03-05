@@ -15,7 +15,7 @@ UltrasonicSensor ultrasonic(13, 14);
 String last_message = "Welcome!";
 
 void handleRoot() {
-  String data_message = "<h1 style='text-align: center; display: block; margin-top: 1em; font-family: monospace; font-size: 3em;'>" + String(last_distance) + "</h1>";
+  String data_message = "<h1 style='text-align: center; display: block; margin-top: 1em; font-family: monospace; font-size: 3em;'>" + last_message + "</h1>";
   // Using a meta tag to refresh data ensures good compatibility (no JavaScript engine required!)
   server.send(200, "text/html", "<html><head><meta http-equiv='refresh' content='1'/></head><body style='color: #3299ff; background-color: black; font-weight: bold'>" + data_message + "</body></html>");
 }
@@ -43,6 +43,25 @@ void setup() {
   Serial.println("Network enabled.");
 }
 
+// EVENT VARIABLES BEGIN
+double dist_average = -1;
+int dist_ct = 0;
+
+int TICK_SPEED = 50;
+
+// Don't keep any message there for too long
+int MSG_STAGNATE = 10000 / TICK_SPEED; // 10 seconds
+int msg_unchanged_ticks = 0;
+
+// For cycling messages
+int cycle_ctr = 0;
+int CYCLE_LEN = 3;
+
+int last_pir = 0;
+
+int us_active = 1; // Ultrasonic distance sensor active
+// EVENT VARIABLES END
+
 void setMessage(String msg) {
   last_message = msg;
   msg_unchanged_ticks = 0;
@@ -50,7 +69,7 @@ void setMessage(String msg) {
 
 int probable_pass = 0;
 int processPassEvent(int dist) {
-  if (dist_average == -1) return;
+  if (dist_average == -1) return 0;
   if (dist * 1.0/dist_average < 0.5) { // Pretty close!
     probable_pass = 1;
   }
@@ -83,29 +102,12 @@ void cycleMessage(String msg1, String msg2, String msg3) {
   }
 }
 
-double dist_average = -1;
-int dist_ct = 0;
-
-int TICK_SPEED = 50;
-
-// Don't keep any message there for too long
-int MSG_STAGNATE = 10000 / TICK_SPEED; // 10 seconds
-int msg_unchanged_ticks = 0;
-
-// For cycling messages
-int cycle_ctr = 0;
-int CYCLE_LEN = 3;
-
-int last_pir = 0;
-
-int us_active = 1; // Ultrasonic distance sensor active
-
 void loop() {
   int distance = ultrasonic.distanceInCentimeters();
   int button1 = digitalRead(18); // Yellow button
   int button2 = digitalRead(19); // Blue button
 
-  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to minimum (3s) for smooth but responsive behavior
+  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to maximum for large range (~7m)
   if (button1 && button2 && !pir) { // Not in room
     if (last_pir) { // Just left the room
       setMessage("Why'd you leave? Don't give up.");
@@ -115,7 +117,7 @@ void loop() {
     }
   }
   else {
-    if (!us_active || processPassEvent(dist)) {
+    if (!us_active || processPassEvent(distance)) {
       cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.");
     }
     if (!last_pir) { // Just entered the room
@@ -133,19 +135,18 @@ void loop() {
 
   if (us_active) {
     if (dist_average = 0) {
-      dist_average = dist;
+      dist_average = distance;
       dist_ct = 1;
     }
     else {
       dist_ct += 1;
-      dist_average = (dist_average * (dist_ct - 1) + dist) / dist_ct;
+      dist_average = (dist_average * (dist_ct - 1) + distance) / dist_ct;
     }
   }
 
 evt_done:
   Serial.printf("Distance: %d cm\tA: %d\tB:%d\tIR:%d\n", distance, button1, button2, pir);
 
-  last_distance = distance;
   server.handleClient();
   last_pir = pir;
   delay(TICK_SPEED); // Run at high speed to ensure we can detect brief "string-crossing"
