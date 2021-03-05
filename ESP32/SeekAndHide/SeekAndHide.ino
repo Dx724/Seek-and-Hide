@@ -107,7 +107,7 @@ void loop() {
   int button1 = digitalRead(18); // Yellow button
   int button2 = digitalRead(19); // Blue button
 
-  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to maximum for large range (~7m)
+  int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to halfway point for large range without noisy readings (~5m)
   if (button1 && button2 && !pir) { // Not in room
     if (last_pir) { // Just left the room
       cycleMessage("Why'd you leave? Don't give up.", "Where are you going?!", "Oh great, you're going the worst way possible.", 1);
