@@ -1,4 +1,14 @@
 #include <UltrasonicSensor.h>
+#include <WiFi.h>
+#include <WebServer.h>
+
+const char* ssid = "SeekAndHide";
+const char* password = "wheretogo";
+
+IPAddress local_ip(192, 168, 1, 1);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 255, 0);
+WebServer server(80);
 
 UltrasonicSensor ultrasonic(13, 14);
 
@@ -8,6 +18,10 @@ void setup() {
   pinMode(18, INPUT_PULLUP);
   pinMode(19, INPUT_PULLUP);
   pinMode(15, INPUT);
+
+  WiFi.softAP(ssid, password);
+  WiFi.softAPConfig(local_ip, gateway, subnet);
+  server.begin();
 }
 
 void loop() {
