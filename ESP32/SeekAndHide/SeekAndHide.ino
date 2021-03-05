@@ -128,11 +128,11 @@ void loop() {
     if (!last_pir) { // Just entered the room
       setMessage("Hey, I think I hear you!");
     }
-    if (button1) { // Normal mode
+    if (!button1) { // Normal mode
       us_active = 1;
       setMessage("You found me! Now go hide me better than the last guy did...");
     }
-    if (button2) { // Hard mode
+    if (!button2) { // Hard mode
       us_active = 0;
       setMessage("You found me! Hard mode activated, that'll be a real challenge for the next guy. Now hide me somewhere safe.");
     }
