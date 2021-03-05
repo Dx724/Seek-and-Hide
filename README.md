@@ -53,3 +53,15 @@ Any box will suffice for enclosing this device. The buttons were mounted on a br
 2. Disconnect the ESP32 from the computer used for programming and connect it to the battery
 3. Find a suitable place to hide the device! (See [Tips for Hiding](#tips-for-hiding) for more information)
 
+## Usage
+1. On a portable Wi-Fi enabled device, connect to the "SeekAndHide" network with the password "wheretogo".
+2. In a web browser on that device, navigate to `192.168.1.1`.
+3. You're ready! Go seek out your mocking playmate.
+4. When you find it, press the yellow or blue button to signify your victory.
+   - The yellow button sets the device to normal mode while the blue button sets the device to hard mode, preventing the virtual personality from using ultrasonic sensor data to provide hints.
+5. Find a clever place to hide it and enjoy the rest of your day. The next player will have a grand time unwrapping your deceptions.
+
+## Tips for Hiding
+- Hide the device so that the sensors face outwards, allowing the virtual personality to provide the best hints.
+- Don't hide the device too high, you don't know how tall the next player will be.
+- For an extra challenge, switch the device to hard mode with the blue button. This will disable some of the more useful hints.
