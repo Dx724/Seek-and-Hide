@@ -60,8 +60,13 @@ Any box will suffice for enclosing this device. The buttons were mounted on a br
 4. When you find it, press the yellow or blue button to signify your victory.
    - The yellow button sets the device to normal mode while the blue button sets the device to hard mode, preventing the virtual personality from using ultrasonic sensor data to provide hints.
 5. Find a clever place to hide it and enjoy the rest of your day. The next player will have a grand time unwrapping your deceptions.
+   - Note: it is best to wait at least 20 seconds between hiding the device and letting the next seeker begin. This gives the virtual personality some time to calibrate to its new environment.
 
 ## Tips for Hiding
 - Hide the device so that the sensors face outwards, allowing the virtual personality to provide the best hints.
 - Don't hide the device too high, you don't know how tall the next player will be.
 - For an extra challenge, switch the device to hard mode with the blue button. This will disable some of the more useful hints.
+
+## Customization
+- The messages sent by the virtual personality can be changed by modifying [this file](ESP32/SeekAndHide/SeekAndHide.ino). The dialogue lines are found in the "cycleMessages" function calls.
+- For larger spaces, potentiometer R2 on the PIR sensor can be tuned higher for increased range.
