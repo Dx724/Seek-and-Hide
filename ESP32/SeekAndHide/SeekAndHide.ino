@@ -49,7 +49,7 @@ void setMessage(String msg) {
 }
 
 int probable_pass = 0;
-void processPassEvent(int dist) {
+int processPassEvent(int dist) {
   if (dist_average == -1) return;
   if (dist * 1.0/dist_average < 0.5) { // Pretty close!
     probable_pass = 1;
@@ -57,15 +57,17 @@ void processPassEvent(int dist) {
   else {
     if (probable_pass) { // Getting close then far -- probably passed it
       cycleMessage("Oof, you walked right past me!", "Don't even have time to stop and say hi?", "Alright, just keep walking, what could go wrong?");
+      probable_pass = 0;
+      return 1;
     }
     probable_pass = 0;
   }
+  return 0;
 }
 
 void cycleMessage(String msg1, String msg2, String msg3) {
   msg_unchanged_ticks += 1;
-  if (msg_unchanged_ticks >= MSG_STAGNATE) {
-    msg_unchanged_ticks = 0;
+  if (msg_unchanged_ticks >= MSG_STAGNATE) { // setMessage will reset this counter
     switch (cycle_ctr) {
       case 0:
         setMessage(msg1);
@@ -113,8 +115,11 @@ void loop() {
     }
   }
   else {
-    if (us_active) {
-      processPassEvent(dist);
+    if (!us_active || processPassEvent(dist)) {
+      cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.");
+    }
+    if (!last_pir) { // Just entered the room
+      setMessage("Hey, I think I hear you!");
     }
     if (button1) { // Normal mode
       us_active = 1;
