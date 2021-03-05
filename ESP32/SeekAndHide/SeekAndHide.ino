@@ -117,7 +117,7 @@ void loop() {
     }
   }
   else {
-    if (!us_active || processPassEvent(distance)) {
+    if (!us_active || processPassEvent(distance)) { // Send idle in-room message if pass event didn't get triggered (note the short-circuited or operation will only call the function if us_active is true)
       cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.", 0);
     }
     if (!last_pir) { // Just entered the room
@@ -134,7 +134,7 @@ void loop() {
   }
 
   if (us_active) {
-    if (dist_average = 0) {
+    if (dist_average == -1) {
       dist_average = distance;
       dist_ct = 1;
     }
@@ -145,7 +145,7 @@ void loop() {
   }
 
 evt_done:
-  Serial.printf("Distance: %d cm\tA: %d\tB:%d\tIR:%d\n", distance, button1, button2, pir);
+  Serial.printf("Distance: %d cm (avg:%f)\tA: %d\tB:%d\tIR:%d\n", distance, dist_average, button1, button2, pir);
 
   server.handleClient();
   last_pir = pir;
