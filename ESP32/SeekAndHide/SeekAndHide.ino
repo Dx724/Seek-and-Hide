@@ -48,8 +48,37 @@ void setMessage(String msg) {
   msg_unchanged_ticks = 0;
 }
 
+int probable_pass = 0;
 void processPassEvent(int dist) {
+  if (dist_average == -1) return;
+  if (dist * 1.0/dist_average < 0.5) { // Pretty close!
+    probable_pass = 1;
+  }
+  else {
+    if (probable_pass) { // Getting close then far -- probably passed it
+      cycleMessage("Oof, you walked right past me!", "Don't even have time to stop and say hi?", "Alright, just keep walking, what could go wrong?");
+    }
+    probable_pass = 0;
+  }
+}
 
+void cycleMessage(String msg1, String msg2, String msg3) {
+  msg_unchanged_ticks += 1;
+  if (msg_unchanged_ticks >= MSG_STAGNATE) {
+    msg_unchanged_ticks = 0;
+    switch (cycle_ctr) {
+      case 0:
+        setMessage(msg1);
+        break;
+      case 1:
+        setMessage(msg2);
+        break;
+      case 2:
+        setMessage(msg3);
+        break;
+    }
+    cycle_ctr = (cycle_ctr + 1) % CYCLE_LEN;
+  }
 }
 
 double dist_average = -1;
@@ -80,22 +109,7 @@ void loop() {
       setMessage("Why'd you leave? Don't give up.");
     }
     else {
-      msg_unchanged_ticks += 1;
-      if (msg_unchanged_ticks == MSG_STAGNATE) {
-         msg_unchanged_ticks = 0;
-         switch (cycle_ctr) {
-          case 0:
-            setMessage("You're not even in the right room!");
-            break;
-          case 1:
-            setMessage("Do you have any idea where you are?");
-            break;
-          case 2:
-            setMessage("Maybe try a different room...");
-            break;
-        }
-        cycle_ctr = (cycle_ctr + 1) % CYCLE_LEN;
-      }
+      cycleMessage("You're not even in the right room!", "Do you have any idea where you are?", "Maybe try a different room...");
     }
   }
   else {
