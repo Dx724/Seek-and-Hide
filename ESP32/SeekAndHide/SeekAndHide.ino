@@ -94,7 +94,7 @@ void cycleMessage(String msg1, String msg2, String msg3, int force) {
 int probable_pass = 0;
 int processPassEvent(int dist) {
   if (dist_average == -1) return 0;
-  if (dist * 1.0/dist_average < 0.3) { // Pretty close!
+  if (dist * 1.0/dist_average < 0.45) { // Pretty close!
     probable_pass += 1; // Increment instead of binary flag -- makes sure it's not just a noisy reading
   }
   else {
