@@ -67,26 +67,9 @@ void setMessage(String msg) {
   msg_unchanged_ticks = 0;
 }
 
-int probable_pass = 0;
-int processPassEvent(int dist) {
-  if (dist_average == -1) return 0;
-  if (dist * 1.0/dist_average < 0.5) { // Pretty close!
-    probable_pass = 1;
-  }
-  else {
-    if (probable_pass) { // Getting close then far -- probably passed it
-      cycleMessage("Oof, you walked right past me!", "Don't even have time to stop and say hi?", "Alright, just keep walking, what could go wrong?");
-      probable_pass = 0;
-      return 1;
-    }
-    probable_pass = 0;
-  }
-  return 0;
-}
-
-void cycleMessage(String msg1, String msg2, String msg3) {
+void cycleMessage(String msg1, String msg2, String msg3, int force) {
   msg_unchanged_ticks += 1;
-  if (msg_unchanged_ticks >= MSG_STAGNATE) { // setMessage will reset this counter
+  if (msg_unchanged_ticks >= MSG_STAGNATE || force) { // setMessage will reset this counter
     switch (cycle_ctr) {
       case 0:
         setMessage(msg1);
@@ -102,6 +85,23 @@ void cycleMessage(String msg1, String msg2, String msg3) {
   }
 }
 
+int probable_pass = 0;
+int processPassEvent(int dist) {
+  if (dist_average == -1) return 0;
+  if (dist * 1.0/dist_average < 0.5) { // Pretty close!
+    probable_pass = 1;
+  }
+  else {
+    if (probable_pass) { // Getting close then far -- probably passed it
+      cycleMessage("Oof, you walked right past me!", "Don't even have time to stop and say hi?", "Alright, just keep walking, what could go wrong?", 1);
+      probable_pass = 0;
+      return 1;
+    }
+    probable_pass = 0;
+  }
+  return 0;
+}
+
 void loop() {
   int distance = ultrasonic.distanceInCentimeters();
   int button1 = digitalRead(18); // Yellow button
@@ -110,18 +110,18 @@ void loop() {
   int pir = digitalRead(15); // Infrared sensor (jumper set to high for repeatable trigger mode), time set to slightly above minimum (~10s) for smooth but responsive behavior, sensitivity set to maximum for large range (~7m)
   if (button1 && button2 && !pir) { // Not in room
     if (last_pir) { // Just left the room
-      setMessage("Why'd you leave? Don't give up.");
+      cycleMessage("Why'd you leave? Don't give up.", "Where are you going?!", "Oh great, you're going the worst way possible.", 1);
     }
     else {
-      cycleMessage("You're not even in the right room!", "Do you have any idea where you are?", "Maybe try a different room...");
+      cycleMessage("You're not even in the right room!", "Do you have any idea where you are?", "Maybe try a different room...", 0);
     }
   }
   else {
     if (!us_active || processPassEvent(distance)) {
-      cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.");
+      cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.", 0);
     }
     if (!last_pir) { // Just entered the room
-      setMessage("Hey, I think I hear you!");
+      cycleMessage("Hey, I think I hear you!", "Oh, you look weirder than I'd imagined!", "Look who finally showed up! Come give me a hug.", 1);
     }
     if (!button1) { // Normal mode
       us_active = 1;
