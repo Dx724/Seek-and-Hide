@@ -1,6 +1,7 @@
 #include <UltrasonicSensor.h>
 #include <WiFi.h>
 #include <WebServer.h>
+#include <ESPmDNS.h>
 
 const char* ssid = "SeekAndHide";
 const char* password = "wheretogo";
@@ -41,6 +42,10 @@ void setup() {
   
   server.begin();
   Serial.println("Network enabled.");
+
+  if (MDNS.begin("find")) {
+    Serial.println("Accessible at find.local");
+  }
 }
 
 // EVENT VARIABLES BEGIN
