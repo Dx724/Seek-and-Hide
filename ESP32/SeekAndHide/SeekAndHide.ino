@@ -13,11 +13,16 @@ WebServer server(80);
 UltrasonicSensor ultrasonic(13, 14);
 
 String last_message = "Welcome!";
+char debug_message[250] = "Debug message.";
 
 void handleRoot() {
   String data_message = "<h1 style='text-align: center; display: block; margin-top: 1em; font-family: monospace; font-size: 3em;'>" + last_message + "</h1>";
   // Using a meta tag to refresh data ensures good compatibility (no JavaScript engine required!)
   server.send(200, "text/html", "<html><head><meta http-equiv='refresh' content='1'/></head><body style='color: #3299ff; background-color: black; font-weight: bold'>" + data_message + "</body></html>");
+}
+
+void handleDebug() {
+  server.send(200, "text/plain", debug_message);
 }
 
 void setup() {
@@ -35,6 +40,7 @@ void setup() {
   WiFi.softAPConfig(local_ip, gateway, subnet);
 
   server.on("/", handleRoot);
+  server.on("/debug", handleDebug);
   server.onNotFound([]() {
     server.send(404, "text/plain", "Not found!");
   });
@@ -145,6 +151,7 @@ void loop() {
   }
 
   Serial.printf("Distance: %d cm (avg:%f)\tA: %d\tB:%d\tIR:%d\n", distance, dist_average, button1, button2, pir);
+  sprintf(debug_message, "Distance: %d cm (avg:%f)\tA: %d\tB:%d\tIR:%d\n", distance, dist_average, button1, button2, pir);
 
   server.handleClient();
   last_pir = pir;
