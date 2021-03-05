@@ -11,6 +11,20 @@ A player connects to the device via Wi-Fi and is guided by a virtual personality
 
 Once the player finds the Seek and Hide, it's time to hide! The player moves the device to a new location and configures its difficulty, setting up a challenge for the next player and coming to the realization that their own journey was the design of some player prior.
 
+# Table of Contents <!-- omit in toc -->
+- [Setup](#setup)
+  - [Hardware](#hardware)
+  - [ESP32 Wiring](#esp32-wiring)
+  - [Device Enclosure](#device-enclosure)
+  - [Dependencies](#dependencies)
+  - [Installation](#installation)
+- [Gameplay](#gameplay)
+  - [How to Play](#how-to-play)
+  - [Tips for Hiding](#tips-for-hiding)
+- [Customization](#customization)
+  - [Changing the virtual personality](#changing-the-virtual-personality)
+  - [Accomodating larger spaces](#accomodating-larger-spaces)
+
 # Setup
 ## Hardware
 The device contains an ESP32 microcontroller which hosts the web server, processes sensor data, and runs the virtual personality. In this specific case, a FreeNove ESP32-WROVER-DEV module was used, although most ESP32 devices should work just as well.
@@ -53,7 +67,8 @@ Any box will suffice for enclosing this device. The buttons were mounted on a br
 2. Disconnect the ESP32 from the computer used for programming and connect it to the battery
 3. Find a suitable place to hide the device! (See [Tips for Hiding](#tips-for-hiding) for more information)
 
-## Usage
+# Gameplay
+## How to Play
 1. On a portable Wi-Fi enabled device, connect to the "SeekAndHide" network with the password "wheretogo".
 2. In a web browser on that device, navigate to `192.168.1.1`.
 3. You're ready! Go seek out your mocking playmate.
@@ -67,6 +82,8 @@ Any box will suffice for enclosing this device. The buttons were mounted on a br
 - Don't hide the device too high, you don't know how tall the next player will be.
 - For an extra challenge, switch the device to hard mode with the blue button. This will disable some of the more useful hints.
 
-## Customization
+# Customization
+## Changing the virtual personality
 - The messages sent by the virtual personality can be changed by modifying [this file](ESP32/SeekAndHide/SeekAndHide.ino). The dialogue lines are found in the "cycleMessages" function calls.
+## Accomodating larger spaces
 - For larger spaces, potentiometer R2 on the PIR sensor can be tuned higher for increased range.
