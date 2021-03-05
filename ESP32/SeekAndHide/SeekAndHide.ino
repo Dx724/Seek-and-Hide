@@ -50,7 +50,7 @@ int dist_ct = 0;
 int TICK_SPEED = 50;
 
 // Don't keep any message there for too long
-int MSG_STAGNATE = 10000 / TICK_SPEED; // 10 seconds
+int MSG_STAGNATE = 7000 / TICK_SPEED; // 7 seconds
 int msg_unchanged_ticks = 0;
 
 // For cycling messages
@@ -144,7 +144,6 @@ void loop() {
     }
   }
 
-evt_done:
   Serial.printf("Distance: %d cm (avg:%f)\tA: %d\tB:%d\tIR:%d\n", distance, dist_average, button1, button2, pir);
 
   server.handleClient();
