@@ -117,7 +117,7 @@ void loop() {
     }
   }
   else {
-    if (!us_active || processPassEvent(distance)) { // Send idle in-room message if pass event didn't get triggered (note the short-circuited or operation will only call the function if us_active is true)
+    if (!us_active || !processPassEvent(distance)) { // Send idle in-room message if pass event didn't get triggered (note the short-circuited or operation will only call the function if us_active is true)
       cycleMessage("Hurry up. You know this is a kids' game, right?", "Either I'm really good at hiding or you're just bad at seeking.", "The last guy was way better than you.", 0);
     }
     if (!last_pir) { // Just entered the room
